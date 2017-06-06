@@ -1,0 +1,8 @@
+image,v30.py,v33.py,v35.py,v36.py,v37.py
+python:2.7,no/yes,no/yes,no/no,no/no,no/no
+python:3.3,yes/yes,yes/no,no/no,no/no,no/no
+python:3.4,yes/yes,yes/yes,no/no,no/no,no/no
+python:3.5.2,yes/yes,yes/yes,yes/no,no/no,no/no
+python:3.5.3,yes/yes,yes/yes,yes/yes,no/no,no/no
+python:3.6.1,yes/yes,yes/yes,yes/yes,yes/no,no/no
+python:3.7.0a,yes/yes,yes/yes,yes/yes,yes/yes,yes/yes
