@@ -15,7 +15,8 @@ IMAGES = [
 ]
 PATH = os.path.abspath(os.path.dirname(__file__))
 FILENAMES = ["v30.py", "v33.py", "v35.py", "v36.py", "v37.py"]
-
+invoke_2to3 = "docker run -w /code --rm -t -v {path}:/code {image} 2to3 --no-diff {filename}"
+invoke_compile = "docker run -w /code --rm -t -v {path}:/code {image} python -m py_compile {filename}"
 
 def yesno(b):
     return "yes" if b else "no"
@@ -23,8 +24,6 @@ def yesno(b):
 
 def main():
     result = []
-    invoke_2to3 = "docker run -w /code --rm -t -v {path}:/code {image} 2to3 --no-diff {filename}"
-    invoke_compile = "docker run -w /code --rm -t -v {path}:/code {image} python -m py_compile {filename}"
 
     for image, filename in itertools.combinations(IMAGES, FILENAMES):
         out = subprocess.run(
@@ -39,16 +38,16 @@ def main():
         result.append((filename, image, rc_compile == 0,
                        not b"ParseError" in out.stdout))
 
+    with open("version_compat.csv", "w") as f:
+        writer = csv.writer(f)
+        writer.writerow(["file", "python", "compile", "2to3"])
+        writer.writerows(result)
+    
     data = defaultdict(defaultdict)
     for line in result:
         fname, img, comp, to3 = line
         data[img]["image"] = img
         data[img][fname] = yesno(comp) + "/" + yesno(to3)
-
-    with open("version_compat.csv", "w") as f:
-        writer = csv.writer(f)
-        writer.writerow(["file", "python", "compile", "2to3"])
-        writer.writerows(r)
 
     with open("version_pivot.csv", "w") as f:
         writer = csv.DictWriter(f, ["image"] + FILENAMES)
